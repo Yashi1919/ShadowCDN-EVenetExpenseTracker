@@ -15,6 +15,7 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { Text } from '~/components/ui/text';
+import { TextInput } from 'react-native-gesture-handler';
 
 export default function TabsScreen() {
   const [value, setValue] = React.useState('login'); // Default tab is 'Login'
@@ -83,17 +84,22 @@ export default function TabsScreen() {
             </CardHeader>
             <CardContent className="gap-4 native:gap-2">
               <View className="gap-1">
-                <Label nativeID="username">Username</Label>
+                
                 <Input
                   id="username"
                   placeholder="Username"
                   value={username}
                   onChangeText={setUsername}
+                 
                 />
               </View>
               <View className="gap-1">
-                <Label nativeID="password">Password</Label>
+               
                 <Input
+                style={
+                  {borderBottomWidth: 1,
+                  borderColor:"#fff",}
+                }
                   id="password"
                   placeholder="********"
                   secureTextEntry

@@ -1,47 +1,61 @@
 import React, { useState, useEffect } from "react";
 import {
-  View,
-  TextInput,
-  Alert,
   ScrollView,
+  Alert,
+  TextInput,
   TouchableOpacity,
+  View,
+  Image,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
+import { Input } from "~/components/ui/input";
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
+  CardContent,
+  CardFooter,
   CardTitle,
+  CardDescription,
 } from "~/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
+import AboutAppModal from "../Modals/AboutAppModal";
+import HelpModal from "../Modals/HelpModal";
+import PremiumModal from "../Modals/PremiumModal";
+import ContactUsModal from "../Modals/ContactUsModal";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Profile() {
-  const route = useRoute();
   const navigation = useNavigation();
-  const { username } = route.params;
+  const username = "yashi"; // Hardcoded username
 
   const [profileImage, setProfileImage] = useState(null);
   const [userName, setUserName] = useState("");
   const [eventCount, setEventCount] = useState(0);
+  const [aboutVisible, setAboutVisible] = useState(false);
+  const [premiumVisible, setPremiumVisible] = useState(false);
+  const [contactVisible, setContactVisible] = useState(false);
+  const [helpVisible, setHelpVisible] = useState(false);
 
   const profileKey = `${username}profile`;
+
+  useEffect(() => {
+    loadUserData();
+    loadEventCount();
+  }, []);
 
   const loadUserData = async () => {
     try {
       const storedData = await AsyncStorage.getItem(profileKey);
+      console.log(storedData)
       if (storedData) {
         const { profileImage, userName } = JSON.parse(storedData);
         setProfileImage(profileImage || null);
         setUserName(userName || "");
       }
     } catch (error) {
-      console.error("Failed to load user data from AsyncStorage:", error);
+      console.error("Failed to load user data:", error);
     }
   };
 
@@ -51,7 +65,7 @@ export default function Profile() {
       await AsyncStorage.setItem(profileKey, JSON.stringify(userData));
       Alert.alert("Success", "Profile updated successfully!");
     } catch (error) {
-      console.error("Failed to save user data to AsyncStorage:", error);
+      console.error("Failed to save user data:", error);
     }
   };
 
@@ -61,65 +75,61 @@ export default function Profile() {
       Alert.alert("Permission Denied", "Media library permissions are required.");
       return;
     }
-
+  
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: [ImagePicker.MediaType.IMAGE], // Use the new API
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.8,
       });
-
-      if (!result.cancelled) {
-        setProfileImage(result.uri);
+  
+      if (!result.canceled) { // Adjusted from `cancelled` to `canceled`
+        setProfileImage(result.assets[0].uri); // Access the URI from the result's assets array
       }
     } catch (error) {
-      console.error("Error selecting image:", error);
-      Alert.alert("Error", "Failed to select image.");
+      console.error("Failed to pick image:", error);
+      Alert.alert("Error", "Failed to pick an image.");
     }
   };
+  
 
   const loadEventCount = async () => {
     try {
-      const countData = await AsyncStorage.getItem(username);
-      if (countData) {
-        const data = JSON.parse(countData);
-        setEventCount(data.events?.length || 0);
+      const eventData = await AsyncStorage.getItem(username);
+      if (eventData) {
+        const parsedData = JSON.parse(eventData);
+        setEventCount(parsedData.events?.length || 0);
       }
     } catch (error) {
-      console.error("Failed to load event count from AsyncStorage:", error);
+      console.error("Failed to load event count:", error);
     }
   };
-
-  useEffect(() => {
-    loadUserData();
-    loadEventCount();
-  }, []);
 
   return (
     <ScrollView>
       <View style={{ flex: 1, padding: 20, backgroundColor: "#f8f9fa" }}>
-        <Card className="w-full max-w-sm mb-5">
+        <Card className="w-full mb-5">
           <CardHeader>
             <CardTitle>
-              <Text style={{ fontSize: 20, fontWeight: "bold", color: "#6c63ff" }}>
+              
                 Profile
-              </Text>
+              
             </CardTitle>
             <CardDescription>
-              <Text style={{ color: "#6c63ff" }}>Update your profile details</Text>
+             Manage your profile details
             </CardDescription>
           </CardHeader>
           <CardContent>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <TextInput
+              <Input
                 style={{
                   fontSize: 18,
-                  color: "#6c63ff",
+                 
                   borderBottomWidth: 1,
-                  borderBottomColor: "#6c63ff",
+                  borderColor:"#fff",
                   flex: 1,
-                  marginRight: 10,
+                  marginRight: 15,
                 }}
                 placeholder="Enter your name"
                 placeholderTextColor="#6c63ff"
@@ -127,38 +137,86 @@ export default function Profile() {
                 onChangeText={setUserName}
               />
               <TouchableOpacity onPress={handleImageUpload}>
-                <Avatar>
-                  {profileImage ? (
-                    <AvatarImage source={{ uri: profileImage }} />
-                  ) : (
-                    <AvatarFallback>
-                      <Text>U</Text>
-                    </AvatarFallback>
-                  )}
-                </Avatar>
+                {profileImage ? (
+                  <Image
+                    source={{ uri: profileImage }}
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 40,
+                      borderWidth: 2,
+                     
+                    }}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 40,
+                      backgroundColor: "#ccc",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderWidth: 2,
+                     
+                    }}
+                  >
+                    <Text style={{ color: "#fff", fontSize: 32 }}></Text>
+                  </View>
+                )}
               </TouchableOpacity>
             </View>
           </CardContent>
           <CardFooter>
-            <Text style={{ color: "#6c63ff" }}>
+            <Text style={{  fontWeight: "bold" }}>
               Total Events Created: {eventCount}
             </Text>
           </CardFooter>
         </Card>
 
-        <Button onPress={saveUserData} className="mb-3">
+        <Button onPress={saveUserData} style={{marginBottom:5}} variant={"secondary"}>
           <Text>Save Profile</Text>
         </Button>
+
+        <TouchableOpacity onPress={() => setAboutVisible(true)}>
+         <Button variant={"secondary"}>
+              <Text>About App</Text>
+              </Button>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => setPremiumVisible(true)}>
+        <Button variant={"secondary"}>
+              <Text>Premium</Text>
+              </Button>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => setContactVisible(true)}>
+        <Button variant={"secondary"}>
+              <Text>Contact Us</Text>
+              </Button>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => setHelpVisible(true)}>
+        <Button variant={"secondary"}>
+              <Text>Help</Text>
+              </Button>
+        </TouchableOpacity>
 
         <Button
           onPress={() => {
             navigation.navigate("Login");
             Alert.alert("Logged Out", "You have been logged out successfully.");
           }}
-          className="bg-red-500 mt-3"
-        >
+          style={{marginTop:5}}
+        variant={"secondary"}
+       >
           <Text>Logout</Text>
         </Button>
+
+        <AboutAppModal isVisible={aboutVisible} onClose={() => setAboutVisible(false)} />
+        <PremiumModal isVisible={premiumVisible} onClose={() => setPremiumVisible(false)} />
+        <ContactUsModal isVisible={contactVisible} onClose={() => setContactVisible(false)} />
+        <HelpModal isVisible={helpVisible} onClose={() => setHelpVisible(false)} />
       </View>
     </ScrollView>
   );

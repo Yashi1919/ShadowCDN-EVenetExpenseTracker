@@ -26,10 +26,12 @@ import { Text } from "~/components/ui/text";
 import { Button } from '~/components/ui/button';
 import dayjs from "dayjs";
 import tw from "twrnc";
-
+import { useRouter } from "expo-router";
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function CreateEvents() {
+const navigation=useNavigation()
   const username = "yashi";
   const [events, setEvents] = useState([]);
   const [expenseTypes, setExpenseTypes] = useState([]);
@@ -37,7 +39,7 @@ export default function CreateEvents() {
   const [newExpenseType, setNewExpenseType] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+    const router=useRouter()
   useEffect(() => {
     requestCalendarPermission();
     loadStorageData();
@@ -63,7 +65,7 @@ export default function CreateEvents() {
   };
 
   const handleEventClick = (event) => {
-    Alert.alert("Event Selected", `You selected "${event.name}"`);
+    navigation.navigate('/EventScreen')
   };
 
   const handleLongPress = (event) => {
@@ -171,7 +173,7 @@ export default function CreateEvents() {
       />
       
      <Button
-        style={{marginBottom:14,height:80,width:80,alignSelf:"center",borderRadius:40}}
+        style={{marginBottom:14,height:80,width:80,alignSelf:"center",borderRadius:40,backgroundColor:"#000000"}}
         onPress={() => setIsModalVisible(true)}
       >
         <View
@@ -180,7 +182,7 @@ export default function CreateEvents() {
       {}, // Replace purple with #6c63ff
     ]}
   >
-    <MaterialIcons name="add" size={28} color="#fff" />
+    <MaterialIcons name="add" size={28} color={"#6c63ff"}/>
   </View>
       </Button>
       <Modal
@@ -266,14 +268,14 @@ const styles = StyleSheet.create({
   eventCard: {
     marginVertical: 8,
     borderRadius: 8,
-    backgroundColor: "#fff",
+   
     
-    height:350,
+    height:400,
     width: 300,
     marginRight: 10,
 
   },
-  expenseType: { fontSize: 12, color: "#333" },
+  expenseType: { fontSize: 12},
   footerText: { fontSize: 14, color: "#6c63ff" },
   addButton: {
     position: "absolute",

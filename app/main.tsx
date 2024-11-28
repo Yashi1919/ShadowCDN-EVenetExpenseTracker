@@ -2,7 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"; // Expo-compatible icons
 import ActiveEvents from "./Main/ActiveEvents";
-import CreateEvents from "./Main/CreateEvents";
+import CreateEvents from "./CreateEvents";
 import Profile from "./Main/Profile";
 
 // Create bottom tabs
