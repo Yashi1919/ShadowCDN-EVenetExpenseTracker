@@ -7,7 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import EventScreen from './EventScreen';
 import CreateEvents from './CreateEvents';
 
-
+import Btn from './btn';
 
 const Stack = createStackNavigator();
 
@@ -15,6 +15,7 @@ export default function App() {
   return (
     <>
     <UserProvider>
+      
         <TabsScreen />
     </UserProvider>
    
