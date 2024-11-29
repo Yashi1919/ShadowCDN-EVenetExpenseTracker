@@ -17,12 +17,7 @@ export default function App() {
     <UserProvider>
         <TabsScreen />
     </UserProvider>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="CreateEvents">
-        <Stack.Screen name="CreateEvents" component={CreateEvents} />
-        <Stack.Screen name="EventScreen" component={EventScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+   
     </>
   );
 }

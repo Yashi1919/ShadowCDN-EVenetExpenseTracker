@@ -39,8 +39,10 @@ const navigation=useNavigation()
   const [newExpenseType, setNewExpenseType] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isModalVisible, setIsModalVisible] = useState(false);
+
     const router=useRouter()
-  useEffect(() => {
+  
+    useEffect(() => {
     requestCalendarPermission();
     loadStorageData();
   }, []);
@@ -65,7 +67,7 @@ const navigation=useNavigation()
   };
 
   const handleEventClick = (event) => {
-    navigation.navigate('/EventScreen')
+    router.push('/EventScreen')
   };
 
   const handleLongPress = (event) => {
@@ -148,7 +150,7 @@ const navigation=useNavigation()
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => handleEventClick(item)}
+            onPress={() => handleEventClick()}
             onLongPress={() => handleLongPress(item)}
           >
             <Card style={styles.eventCard}>

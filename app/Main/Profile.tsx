@@ -25,10 +25,13 @@ import HelpModal from "../Modals/HelpModal";
 import PremiumModal from "../Modals/PremiumModal";
 import ContactUsModal from "../Modals/ContactUsModal";
 import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
+
 
 export default function Profile() {
   const navigation = useNavigation();
   const username = "yashi"; // Hardcoded username
+  const router=useRouter()
 
   const [profileImage, setProfileImage] = useState(null);
   const [userName, setUserName] = useState("");
@@ -178,33 +181,25 @@ export default function Profile() {
           <Text>Save Profile</Text>
         </Button>
 
-        <TouchableOpacity onPress={() => setAboutVisible(true)}>
-         <Button variant={"secondary"}>
+         <Button variant={"secondary"} onPress={() => setAboutVisible(true)}>
               <Text>About App</Text>
               </Button>
-        </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setPremiumVisible(true)}>
-        <Button variant={"secondary"}>
+        <Button variant={"secondary"} onPress={() => setPremiumVisible(true)}>
               <Text>Premium</Text>
               </Button>
-        </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setContactVisible(true)}>
-        <Button variant={"secondary"}>
+        <Button variant={"secondary"} onPress={() => setContactVisible(true)}>
               <Text>Contact Us</Text>
               </Button>
-        </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setHelpVisible(true)}>
-        <Button variant={"secondary"}>
+        <Button variant={"secondary"} onPress={() => setHelpVisible(true)}>
               <Text>Help</Text>
               </Button>
-        </TouchableOpacity>
 
         <Button
           onPress={() => {
-            navigation.navigate("Login");
+            router.push('/TabsScreen')
             Alert.alert("Logged Out", "You have been logged out successfully.");
           }}
           style={{marginTop:5}}

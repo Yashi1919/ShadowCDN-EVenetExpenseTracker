@@ -62,6 +62,7 @@ export default function TabsScreen() {
   return (
     <View className="flex-1 justify-center p-6">
       <Tabs
+      style={{borderRadius:25}}
         value={value}
         onValueChange={setValue}
         className="w-full max-w-[400px] mx-auto flex-col gap-1.5"
@@ -96,10 +97,6 @@ export default function TabsScreen() {
               <View className="gap-1">
                
                 <Input
-                style={
-                  {borderBottomWidth: 1,
-                  borderColor:"#fff",}
-                }
                   id="password"
                   placeholder="********"
                   secureTextEntry

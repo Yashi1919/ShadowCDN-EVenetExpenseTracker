@@ -1,61 +1,66 @@
-import React, { useEffect } from "react";
-import { View, AsyncStorage } from "react-native";
+import React, { useCallback } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons"; // Expo vector icons
+import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import tw from "twrnc";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 // Import screens
 import Expenses from "./Events/Expenses";
 import Fundraisers from "./Events/FundRaisers";
 import History from "./Events/History";
 
+// Define the tab navigator
 const Tab = createBottomTabNavigator();
 
-const EventScreen = ({ route }) => {
-  const { event } = route.params; // Get event details from navigation params
-
-  // Save event details in AsyncStorage if not already present
-  const saveEventToStorage = async () => {
+const EventScreen: React.FC = () => {
+  const saveDefaultEventToStorage = async () => {
     try {
-      const storedEvent = await AsyncStorage.getItem(event.name);
+      const storedEvent = await AsyncStorage.getItem("event");
       if (!storedEvent) {
-        const eventData = {
-          name: event.name,
-          date: event.date,
-          expenseTypes: event.expenseTypes,
+        const defaultEventData = {
+          name: "Default Event",
+          date: new Date().toISOString(),
+          expenseTypes: ["Food", "Transport", "Miscellaneous"],
           totalAmount: 0,
           history: [],
           fundraisers: [],
           volunteers: [],
         };
-        await AsyncStorage.setItem(event.name, JSON.stringify(eventData));
-        console.log(`Event ${event.name} saved to storage.`);
-      } else {
-        console.log(`Event ${event.name} already exists in storage.`);
+
+        await AsyncStorage.setItem("event", JSON.stringify(defaultEventData));
+        console.log("Default event saved to storage.");
       }
     } catch (error) {
-      console.error("Failed to save event data to AsyncStorage", error);
+      console.error("Error saving event to AsyncStorage:", error);
     }
   };
 
-  useEffect(() => {
-    saveEventToStorage();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      saveDefaultEventToStorage();
+    }, [])
+  );
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
-          let iconName;
+          let iconName: string;
 
-          if (route.name === "Expenses") {
-            iconName = "attach-money";
-          } else if (route.name === "Fundraisers") {
-            iconName = "volunteer-activism";
-          } else if (route.name === "Statistics") {
-            iconName = "bar-chart";
-          } else if (route.name === "History") {
-            iconName = "history";
+          switch (route.name) {
+            case "Expenses":
+              iconName = "attach-money";
+              break;
+            case "Fundraisers":
+              iconName = "volunteer-activism";
+              break;
+          
+            case "History":
+              iconName = "history";
+              break;
+            default:
+              iconName = "help-outline";
           }
 
           return <MaterialIcons name={iconName} size={size} color={color} />;
@@ -66,18 +71,9 @@ const EventScreen = ({ route }) => {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Expenses">
-        {() => <Expenses event={event} />}
-      </Tab.Screen>
-      <Tab.Screen name="Fundraisers">
-        {() => <Fundraisers event={event} />}
-      </Tab.Screen>
-      <Tab.Screen name="Statistics">
-        {() => <Statistics event={event} />}
-      </Tab.Screen>
-      <Tab.Screen name="History">
-        {() => <History event={event} />}
-      </Tab.Screen>
+      <Tab.Screen name="Expenses" component={Expenses} />
+      <Tab.Screen name="Fundraisers" component={Fundraisers} />
+      <Tab.Screen name="History" component={History} />
     </Tab.Navigator>
   );
 };
