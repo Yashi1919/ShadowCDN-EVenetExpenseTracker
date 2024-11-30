@@ -4,6 +4,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons"; // Expo-compatible
 import ActiveEvents from "./Main/ActiveEvents";
 import CreateEvents from "./CreateEvents";
 import Profile from "./Main/Profile";
+import Variants from "./Variants";
 
 // Create bottom tabs
 const Tab = createBottomTabNavigator();
@@ -18,7 +19,7 @@ export default function MainScreen() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === "ActiveEvents") {
+          if (route.name === "Variants") {
             iconName = focused ? "event" : "event-note";
           } else if (route.name === "CreateEvents") {
             iconName = focused ? "add-box" : "add";
@@ -47,6 +48,12 @@ export default function MainScreen() {
       <Tab.Screen
         name="Profile"
         component={Profile}
+        initialParams={{ username }}
+      />
+
+      <Tab.Screen
+        name="Variants"
+        component={Variants}
         initialParams={{ username }}
       />
     </Tab.Navigator>

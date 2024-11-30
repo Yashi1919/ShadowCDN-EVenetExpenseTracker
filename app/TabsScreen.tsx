@@ -16,6 +16,9 @@ import { Label } from '~/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { Text } from '~/components/ui/text';
 import { TextInput } from 'react-native-gesture-handler';
+import { Txt } from '~/components/ui/txt';
+
+
 
 export default function TabsScreen() {
   const [value, setValue] = React.useState('login'); // Default tab is 'Login'
